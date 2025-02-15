@@ -7,32 +7,48 @@ import {
   View,
   Image,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../lib/theme";
-import { images } from "../constants";
-import Button from "../components/general/Button";
-import { router } from "expo-router";
+import theme from "../../lib/theme";
+import { images } from "../../constants";
+import Button from "../../components/general/Button";
+import { Link, router } from "expo-router";
 
-export default function App() {
+export default function Login() {
+  const [username, setUsername] = useState("m");
+  const [password, setPassword] = useState("zohaib");
+
+  
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logoCircle}>
-        <Image source={images.logo} style={styles.logo} />
-      </View>
       <View style={styles.textContainer}>
-        <Text style={styles.heading}>Find a best</Text>
-        <Text style={styles.subHeading}>Taxi Ride</Text>
+        <Text style={styles.heading}>Don't have an account?</Text>
       </View>
+
+      <TextInput
+        style={styles.input}
+        value={username}
+        onChangeText={(t) => setUsername(t)}
+      />
+      <TextInput
+        style={styles.input}
+        value={password}
+        onChangeText={(t) => setPassword(t)}
+      />
+
       <View style={styles.promptContainer}>
         <Button
-          title="Login"
+          title="Submit"
           onPress={() => router.push("/login")}
           themeType="dark"
         />
         <Text style={styles.spanText}>
-          Don't have an account?{" "}
-          <Text style={styles.spanTextBlack}>Sign Up</Text>
+          Already have an account?{" "}
+          <Text style={styles.spanTextBlack} onPress={() => {}}>
+            Log In
+          </Text>
         </Text>
       </View>
 
@@ -48,6 +64,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
+    paddingTop: 100,
+  },
+  input: {
+    borderColor: "white",
+    borderRadius: 4,
+    borderWidth: 2,
+    padding: 5,
+    fontSize: 20,
   },
   textContainer: {
     display: "flex",
@@ -55,13 +79,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   heading: {
-    fontFamily: theme.fonts.regular,
+    fontFamily: theme.fonts.bold,
     fontSize: 40,
     color: "white",
   },
   subHeading: {
-    fontFamily: theme.fonts.bold,
-    fontSize: 40,
+    fontFamily: theme.fonts.light,
+    fontSize: 20,
     color: "white",
   },
   logo: {
