@@ -3,7 +3,12 @@ import React from "react";
 import theme from "../../lib/theme";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-const Button = ({ title = "Button", onPress, themeType = "light" }) => {
+const Button = ({
+  title = "Button",
+  onPress,
+  themeType = "light",
+  disable,
+}) => {
   const isDarkTheme = themeType === "dark";
 
   return (
@@ -13,6 +18,7 @@ const Button = ({ title = "Button", onPress, themeType = "light" }) => {
         { backgroundColor: isDarkTheme ? "#000" : "#fff" },
       ]}
       onPress={onPress}
+      disabled={disable}
     >
       <Text
         style={[styles.buttonText, { color: isDarkTheme ? "#fff" : "#000" }]}

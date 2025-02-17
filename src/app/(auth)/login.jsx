@@ -16,10 +16,37 @@ import Button from "../../components/general/Button";
 import { Link, router } from "expo-router";
 
 export default function Login() {
-  const [username, setUsername] = useState("m");
-  const [password, setPassword] = useState("zohaib");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  
+  const submitBtn = async () => {
+    try {
+      setLoading(true);
+      const data = {
+        username: username,
+        password: password,
+      };
+      console.log(data);
+
+      const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (res.status === 404) throw new Error("Unknown req");
+
+      //router.push("/home")
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,22 +54,27 @@ export default function Login() {
         <Text style={styles.heading}>Don't have an account?</Text>
       </View>
 
-      <TextInput
-        style={styles.input}
-        value={username}
-        onChangeText={(t) => setUsername(t)}
-      />
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={(t) => setPassword(t)}
-      />
+      <View style={{ height: 400, width: 600, backgroundColor: "white" }}>
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={(t) => setUsername(t)}
+          placeholder="Username"
+        />
+        <TextInput
+          style={styles.input}
+          value={password}
+          onChangeText={(t) => setPassword(t)}
+          placeholder="Password"
+        />
+      </View>
 
       <View style={styles.promptContainer}>
         <Button
           title="Submit"
-          onPress={() => router.push("/login")}
+          onPress={submitBtn}
           themeType="dark"
+          disable={loading}
         />
         <Text style={styles.spanText}>
           Already have an account?{" "}
@@ -53,6 +85,7 @@ export default function Login() {
       </View>
 
       <StatusBar backgroundColor="#161622" style="light" />
+      {error ? <Text>Error Occured</Text> : ""}
     </SafeAreaView>
   );
 }
