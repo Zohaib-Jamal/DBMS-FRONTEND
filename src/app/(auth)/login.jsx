@@ -14,6 +14,8 @@ import theme from "../../lib/theme";
 import { images } from "../../constants";
 import Button from "../../components/general/Button";
 import { Link, router } from "expo-router";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import LoginInput from "../../components/general/LoginInput";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -39,8 +41,6 @@ export default function Login() {
       });
 
       if (res.status === 404) throw new Error("Unknown req");
-
-      //router.push("/home")
     } catch (err) {
       setError(err);
     } finally {
@@ -51,23 +51,77 @@ export default function Login() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.heading}>Don't have an account?</Text>
+        <Text style={styles.heading}>Have an account?</Text>
       </View>
 
-      <View style={{ height: 400, width: 600, backgroundColor: "white" }}>
-        <TextInput
-          style={styles.input}
-          value={username}
-          onChangeText={(t) => setUsername(t)}
-          placeholder="Username"
-        />
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={(t) => setPassword(t)}
-          placeholder="Password"
-        />
+      <View
+        style={{
+          height: "80%",
+          width: "40%",
+          backgroundColor: "white",
+          borderRadius: "5%",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            marginTop: "50px",
+            fontSize: "50px",
+            fontFamily: theme.fonts.bold,
+          }}
+        >
+          Login
+        </Text>
+
+        <LoginInput />
+        <View>
+          <View>
+            <Text
+              style={{
+                marginTop: "40px",
+                //marginLeft: "40px",
+                fontSize: "20px",
+                fontStyle: "Bold",
+              }}
+            >
+              Password
+            </Text>
+            <View
+              style={{
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexDirection: "row",
+                marginTop: "10px",
+                //marginLeft: "50px",
+              }}
+            >
+              <FontAwesome name="user-o" size={24} color={"gray"} />
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    marginLeft: "10px",
+                    outline: "none",
+                    width: "400px",
+                    color: "gray",
+                  },
+                ]}
+                value={username}
+                onChangeText={(t) => setUsername(t)}
+                placeholder="Enter your Password"
+                autoFocus={false}
+              />
+            </View>
+          </View>
+        </View>
       </View>
+
+      <TextInput
+        style={styles.input}
+        value={password}
+        onChangeText={(t) => setPassword(t)}
+        placeholder="Password"
+      />
 
       <View style={styles.promptContainer}>
         <Button
@@ -77,9 +131,14 @@ export default function Login() {
           disable={loading}
         />
         <Text style={styles.spanText}>
-          Already have an account?{" "}
-          <Text style={styles.spanTextBlack} onPress={() => {}}>
-            Log In
+          Don't have an account?{" "}
+          <Text
+            style={styles.spanTextBlack}
+            onPress={() => {
+              router.replace("/signup");
+            }}
+          >
+            Sign Up
           </Text>
         </Text>
       </View>
