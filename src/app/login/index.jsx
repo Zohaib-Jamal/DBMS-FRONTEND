@@ -38,7 +38,7 @@ const login = () => {
 
       const res = await postData(data, "/auth/user/login");
       if (res.access_token) {
-        router.replace("/home");
+        router.replace("/driver");
 
       
       }
