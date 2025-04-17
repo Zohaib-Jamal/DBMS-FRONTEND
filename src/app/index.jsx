@@ -64,6 +64,22 @@ export default function App() {
       >
         <Text>Login</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          router.replace("/driver");
+        }}
+      >
+        <Text>Driver</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => {
+          router.replace("/user");
+        }}
+      >
+        <Text>Map</Text>
+      </TouchableOpacity>
       <StatusBar style="auto" />
     </View>
   );

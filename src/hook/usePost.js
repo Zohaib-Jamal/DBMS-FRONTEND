@@ -1,19 +1,13 @@
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const baseurl = "http://192.168.1.13:3000"
+
+
 const usePost = () => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-
-
-
-
-
-
-
-
 
 
 
@@ -24,7 +18,7 @@ const usePost = () => {
 
     setLoading(true);
     try {
-      const str = `http://192.168.1.13:3000${api}`;
+      const str = `${baseurl}${str}`;
 
       const accToken = await AsyncStorage.getItem("access_token");
 
@@ -51,7 +45,7 @@ const usePost = () => {
       if (res.status === 403) {
         const refToken = await AsyncStorage.getItem("refresh_token");
 
-        const res = await fetch("http://192.168.1.13:3000/refresh_token", {
+        const res = await fetch(`${baseurl}/refresh_token`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
 

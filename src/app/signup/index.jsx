@@ -48,6 +48,7 @@ const Signup = () => {
 
       const data = { firstName, lastName, email, password, dob, phoneNumber };
       await postData(data, "/auth/user/signup");
+      router.push("/user/bus")
     } catch (err) {
       setError(err);
     } finally {
