@@ -6,7 +6,10 @@ import {
   Button,
   TouchableOpacity,
   Switch,
+  ActivityIndicator,
+  Alert
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react";
 import usePost from "../../hook/usePost";
 import { router } from "expo-router";
@@ -20,35 +23,35 @@ const login = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-
-
   useEffect(() => {
     setEmail("123@gmail.com");
     setPassword("12345678");
   }, []);
 
-
-  useEffect(()=>{}, [])
-
-
-
   const submit = async () => {
     try {
       const data = { email, password };
-
-      const res = await postData(data, "/auth/user/login");
-      if (res.access_token) {
-        router.replace("/driver");
-
-      
+      if (!isEnabled) {
+        console.log("user");
+        const res = await postData(data, "/auth/user/login");
+        if (res?.access_token) {
+          router.replace("/user");
+        } else {
+          Alert.alert("Error", res ? res : "An Error Occured");
+        }
+      } else {
+        const res = await postData(data, "/auth/driver/login/email");
+        if (res?.access_token) {
+          router.replace("/driver");
+        } else {
+          Alert.alert("Error", res ? res : "An Error Occured");
+        }
       }
     } catch (err) {
       setError(err);
     } finally {
     }
   };
-
-
 
   return (
     <SafeAreaView
@@ -123,14 +126,13 @@ const login = () => {
             }}
           >
             <Text style={{ color: "white", fontSize: 16, marginRight: 10 }}>
-              Login As{isEnabled ? " User" : " Driver"}{" "}
+              Login A Driver
               {/* Display current user type */}
             </Text>
 
             <Switch
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              trackColor={{ false: "#767577", true: "#FFBC07" }}
               thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
               value={isEnabled}
             />
@@ -139,17 +141,22 @@ const login = () => {
           <TouchableOpacity
             style={{
               width: "89%",
-              backgroundColor: "#4a4a4a", // Blue button color
+              backgroundColor: "#4a4a4a",
               borderRadius: 10,
-              alignItems: "center", // Centers the text inside the button
+              alignItems: "center",
               borderColor: "white",
               borderWidth: 1,
-              height: 40,
+              height: 50,
               justifyContent: "center",
             }}
             onPress={submit}
+            disabled={loading}
           >
-            <Text style={{ color: "white", fontSize: 18 }}>Login</Text>
+            {loading ? (
+              <ActivityIndicator color="#FFBC07" size="large" />
+            ) : (
+              <Text style={{ color: "white", fontSize: 18 }}>Login</Text>
+            )}
           </TouchableOpacity>
 
           {/* Divider */}
@@ -184,6 +191,7 @@ const login = () => {
           </View>
         </View>
       </View>
+      <StatusBar backgroundColor="#1c1c1c" style="dark" />
     </SafeAreaView>
   );
 };

@@ -6,12 +6,15 @@ import {
   View,
   Switch,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useEffect, useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useUser } from "../../context/UserContext";
 import usePost from "../../hook/usePost";
 import { router } from "expo-router";
+import { validateSignUpForm } from "../../lib/validate";
 
 const Signup = () => {
   const [firstName, setfirstName] = useState("");
@@ -21,8 +24,11 @@ const Signup = () => {
   const [cpass, setcPass] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [cnic, setCnic] = useState("");
-  const [dob, setDOB] = useState(new Date());
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+  const [dob, setDOB] = useState(eighteenYearsAgo);
   const [showPicker, setShowPicker] = useState(false);
+  //const [loading, setLodaing] = useState(false);
 
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -34,24 +40,64 @@ const Signup = () => {
     setlastName("jamal");
     setEmail("123@gmail.com");
     setPassword("12345678");
-    setPhoneNumber("12345678");
+    setcPass("12345678");
+    setPhoneNumber("0336-1234567");
+    setCnic("35202-1111111-1");
   }, []);
 
   const submit = async () => {
     try {
-      /*
-      if (pass !== cpass) {
-        alert("Passwords do not match!");
-        return;
-      }*/
-      const phoneNumber = "0123-1234567";
+   
 
-      const data = { firstName, lastName, email, password, dob, phoneNumber };
-      await postData(data, "/auth/user/signup");
-      router.push("/user/bus")
+      if (password !== cpass) {
+        Alert.alert("Passwords do not match!");
+        return;
+      }
+
+      const error = validateSignUpForm({
+        firstName,
+        lastName,
+        email,
+        password,
+        cpass,
+        phoneNumber,
+        cnic,
+      }, isEnabled);
+
+      if (error) {
+        Alert.alert(error);
+        return;
+      }
+
+      if (!isEnabled) {
+        const data = { firstName, lastName, email, password, dob, phoneNumber };
+        const res = await postData(data, "/auth/user/signup");
+        console.log("user", res);
+        if (res?.access_token) {
+          router.replace("/user");
+        } else {
+          Alert.alert("Error", res ? res : "An Error Occured");
+        }
+      } else {
+        const data = {
+          firstName,
+          lastName,
+          email,
+          password,
+          dob,
+          phoneNumber,
+          cnic,
+        };
+        const res = await postData(data, "/auth/driver/signup");
+        console.log("driver", res);
+        if (res?.access_token) {
+          router.replace("/driver");
+        } else {
+          Alert.alert("Error", res ? res : "An Error Occured");
+        }
+      }
     } catch (err) {
-      setError(err);
-    } finally {
+      //setError(err);
     }
   };
 
@@ -234,7 +280,7 @@ const Signup = () => {
           />
 
           {/* Switch for User Type */}
-          
+
           <View
             style={{
               flexDirection: "row", // Aligns switch and labels horizontally
@@ -251,7 +297,7 @@ const Signup = () => {
               thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
               onValueChange={toggleSwitch}
               value={isEnabled}
-              backgroundColor = "4a4a4a"
+              backgroundColor="4a4a4a"
             />
           </View>
 
@@ -270,24 +316,28 @@ const Signup = () => {
               value={cnic}
               placeholderTextColor="#4a4a4a"
               onChangeText={(e) => setCnic(e)}
-              secureTextEntry
             />
           )}
           {/* Login Button */}
           <TouchableOpacity
             style={{
               width: "89%",
-              backgroundColor: "#4a4a4a", // Blue button color
+              backgroundColor: "#4a4a4a",
               borderRadius: 10,
-              alignItems: "center", // Centers the text inside the button
+              alignItems: "center",
               borderColor: "white",
               borderWidth: 1,
-              height: 40,
+              height: 50,
               justifyContent: "center",
             }}
             onPress={submit}
+            disabled={loading}
           >
-            <Text style={{ color: "white", fontSize: 18 }}>Sign Up</Text>
+            {loading ? (
+              <ActivityIndicator color="#FFBC07" size="large" />
+            ) : (
+              <Text style={{ color: "white", fontSize: 18 }}>Sign Up</Text>
+            )}
           </TouchableOpacity>
 
           {/* Divider */}

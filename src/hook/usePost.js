@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const baseurl = "http://192.168.1.13:3000"
+const baseurl = "http://192.168.21.133:3000"
 
 
 const usePost = () => {
@@ -18,7 +18,7 @@ const usePost = () => {
 
     setLoading(true);
     try {
-      const str = `${baseurl}${str}`;
+      const str = `${baseurl}${api}`;
 
       const accToken = await AsyncStorage.getItem("access_token");
 
@@ -79,12 +79,12 @@ const usePost = () => {
       return result
     } catch (err) {
       setError(err); // invlaid token invalid req incomplete data
-      console.log(err); // print error
+      console.log("post:", err); // print error
 
 
 
 
-      return null // 
+      return err.message // 
     } finally {
       setLoading(false);
     }

@@ -1,84 +1,70 @@
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // assuming you're using React Native
 
-const baseurl = "http://192.168.21.133:3000"
+const baseurl = "http://192.168.21.133:3000";
 
 const useGet = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
-
   const [error, setError] = useState(null);
 
-  const getData = async (str) => {
+  const getData = async (str, method = "GET") => {
     try {
       setLoading(true);
       const api = `${baseurl}${str}`;
+      let accToken = await AsyncStorage.getItem("access_token");
 
-      const accToken = await AsyncStorage.getItem("access_token");
-
-      const options = {
-        method: "GET",
+      let options = {
+        method: method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accToken ? accToken : ""}`,
+          Authorization: `Bearer ${accToken || ""}`,
         },
       };
 
-      
+      console.log("api: ", api)
 
-      const res = await fetch(api, options);
-
-      const result = await res.json();
-
+      let res = await fetch(api, options);
+      let result = await res.json();
 
       if (res.status === 403) {
         const refToken = await AsyncStorage.getItem("refresh_token");
 
-        const res = await fetch(`${baseurl}/refresh_token`, {
+        const refreshRes = await fetch(`${baseurl}/refresh_token`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-
-          body: JSON.stringify(refToken),
+          body: JSON.stringify({ refresh_token: refToken }),
         });
 
-        const result2 = await res.json()
+        const refreshResult = await refreshRes.json();
 
-        if (res.status === 403) {
+        if (refreshRes.status === 403) {
           throw new Error("Unauthorized");
         }
-        const accToken = result2.access_token;
+
+        accToken = refreshResult.access_token;
         await AsyncStorage.setItem("access_token", accToken);
 
-
-        const options = {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accToken ? accToken : ""}`,
-          },
-        };
-
+        options.headers.Authorization = `Bearer ${accToken}`;
         res = await fetch(api, options);
-
         result = await res.json();
-
-        
       } else if (res.status > 299) {
-        throw new Error(result.message);
+        throw new Error(result.message || "Request failed");
       }
 
-      setResponse(result); 
+      setResponse(result);
+
+      return result
     } catch (err) {
       setError(err);
+
+      return err.message
     } finally {
       setLoading(false);
     }
   };
 
-  return { reponse, error, loading, getData };
+  return { response, error, loading, getData };
 };
 
-export default useGet
-
-
-
-
+export default useGet;
