@@ -35,6 +35,7 @@ const RootLayout = () => {
       <Stack.Screen name="signup/index" options={{ headerShown: false }} />
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="user" options={{ headerShown: false }} />
+      <Stack.Screen name="driver" options={{ headerShown: false }} />
     </Stack>
   );
 };

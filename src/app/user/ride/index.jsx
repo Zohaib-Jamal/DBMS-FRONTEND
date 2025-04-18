@@ -53,21 +53,6 @@ const choose = () => {
   }, []);
 
 
-
-  useEffect(()=>{
-    console.log("arr: ", userLocation)
-    console.log("dep: ", destinationLocation)
-  },[userLocation])
-
-  useEffect(()=>{
-    console.log("arr: ", userLocation)
-    console.log("dep: ", destinationLocation)
-  },[destinationLocation])
-
-
-
-
-
   return (
     <SafeAreaView
       style={{

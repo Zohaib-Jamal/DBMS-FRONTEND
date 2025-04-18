@@ -32,13 +32,13 @@ const usePost = () => {
         body: JSON.stringify(data),
       };
 
-      console.log("Sending data:", data);
+      
 
       const res = await fetch(str, options);
 
 
       
-      console.log("status: ", res.status);
+      
       const result = await res.json();
       console.log(result);
 
@@ -66,7 +66,7 @@ const usePost = () => {
       }
 
 
-      if (api === "/auth/user/login" || api === "/auth/user/signup") {
+      if (api === "/auth/user/login" || api === "/auth/user/signup" || api === "/auth/driver/signup" || api === "/auth/driver/login/email") {
         const refToken = result.refresh_token;
         const accToken = result.access_token;
 
@@ -75,7 +75,7 @@ const usePost = () => {
       }
 
       setResponse(result);
-      console.log("fin")
+  
       return result
     } catch (err) {
       setError(err); // invlaid token invalid req incomplete data
