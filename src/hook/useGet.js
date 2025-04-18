@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // assuming you're using React Native
 
-const baseurl = "http://192.168.21.133:3000";
+const baseurl = "http://192.168.1.13:3000";
 
 const useGet = () => {
   const [loading, setLoading] = useState(false);

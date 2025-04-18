@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const baseurl = "http://192.168.21.133:3000"
+const baseurl = "http://192.168.1.13:3000"
 
 
 const usePost = () => {

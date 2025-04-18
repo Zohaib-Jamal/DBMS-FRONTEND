@@ -4,12 +4,7 @@ const LocationContext = createContext();
 export const useLocation = () => useContext(LocationContext);
 
 export const LocationProvider = ({ children }) => {
-  const [userAddress, setUserAddress] = useState(null);
-
-  const [userlongitude, setUserLongitude] = useState(null);
-  const [destinationAddress, setDestinationAddress] = useState(null);
-  const [destinationlongitude, setDestinationLongitude] = useState(null);
-
+ 
   const [userLocation, setUserLocation] = useState({
     address: null,
     longitude: null,

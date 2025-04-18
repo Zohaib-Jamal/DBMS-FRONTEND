@@ -18,28 +18,31 @@ import { images, svgs } from "../constants";
 import Logo from "../../assets/svgs/logo";
 
 export default function App() {
-  /*
   const { loading, error, reponse, postData } = usePost();
   useEffect(() => {
     const fn = async () => {
-    
       const refresh_token = await AsyncStorage.getItem("refresh_token");
-
 
       const res = await postData({ refresh_token }, "/auth/refresh_token");
 
-
       const access_token = res.access_token;
-      
+
       if (access_token) {
         await AsyncStorage.setItem("access_token", access_token);
-        router.replace("/home");
+        router.replace("/user");
       }
     };
 
     fn();
   }, []);
-*/
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center ">
+        <ActivityIndicator color="#FFBC07" size="large" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -68,7 +71,7 @@ export default function App() {
                 resizeMode="contain"
               />
             </View>
-            
+
             <View className="mt-5 -scroll-mb-10 w-72">
               <CustomButton
                 title="Explore"
