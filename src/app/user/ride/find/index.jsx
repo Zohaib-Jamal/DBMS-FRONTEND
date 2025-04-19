@@ -7,16 +7,32 @@ import { useLocation } from "../../../../context/LocationContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRide } from "../../../../context/RideContext";
 import { BASE_URL } from "../../../../constants";
-import {router} from "expo-router"
+import { router } from "expo-router";
 
 const baseurl = BASE_URL;
 
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const toRad = (value) => (value * Math.PI) / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+
+  return Math.round(distance);
+}
+
 const find = () => {
   const { userData, setUserData } = useUser();
-  const { setRideData,socket } = useRide();
+  const { setRideData, socket } = useRide();
   const { userLocation, destinationLocation } = useLocation();
   const [offers, setOffers] = useState([]);
- 
 
   useEffect(() => {
     const fn = async () => {
@@ -33,12 +49,17 @@ const find = () => {
           userID: userData.UserID,
           pickup: userLocation.address,
           destination: destinationLocation.address,
-          fare: 100,
+          fare:
+            haversine(
+              userLocation.latitude,
+              userLocation.longitude,
+              destinationLocation.latitude,
+              destinationLocation.longitude
+            ) * 15,
         });
 
         socket.current.on("counterOffer", (mess) => {
           setOffers((prev) => [...prev, { ...mess, pending: false }]);
-         
         });
 
         socket.current.on("rideAccepted", (mess) => {
@@ -74,7 +95,6 @@ const find = () => {
               rating={item.rating}
               pending={item.pending}
               onAccept={() => {
-
                 setOffers((prevOffers) =>
                   prevOffers.map((offer, i) =>
                     i === index ? { ...offer, pending: true } : offer
@@ -92,7 +112,7 @@ const find = () => {
                   driverName: `${item.firstName} ${item.lastName}`,
                   driverRating: item.rating,
                   userName: `${userData.firstname} ${userData.lastname}`,
-                  userRating: userData.rating
+                  userRating: userData.rating,
                 });
               }}
             />
@@ -109,10 +129,14 @@ const find = () => {
 
 export default find;
 
-const OfferCard = ({ fare, firstName, lastName, rating, onAccept, pending }) => {
-
-  
-
+const OfferCard = ({
+  fare,
+  firstName,
+  lastName,
+  rating,
+  onAccept,
+  pending,
+}) => {
   return (
     <View
       className="bg-[#242A33] rounded-2xl p-4 w-full max-w-sm mx-auto mb-5"
@@ -121,7 +145,9 @@ const OfferCard = ({ fare, firstName, lastName, rating, onAccept, pending }) => 
       <Text className="text-[#FFBC07] text-lg font-semibold mb-1">
         Driver: {firstName} {lastName}
       </Text>
-      <Text className="text-gray-300 text-sm mb-3">Rating: {rating==="null" || !rating?"New Driver":rating}</Text>
+      <Text className="text-gray-300 text-sm mb-3">
+        Rating: {rating === "null" || !rating ? "New Driver" : rating}
+      </Text>
 
       <View className="flex-row justify-between items-center mb-3">
         <Text className="text-white text-sm">Fare</Text>
@@ -134,7 +160,7 @@ const OfferCard = ({ fare, firstName, lastName, rating, onAccept, pending }) => 
         <Text className="text-yellow-400 text-center font-bold">Pending</Text>
       ) : (
         <TouchableOpacity
-          onPress={ onAccept}
+          onPress={onAccept}
           className="bg-[#FFBC07] rounded p-2 items-center"
         >
           <Text className="text-black font-bold text-sm">Accept</Text>
