@@ -57,6 +57,11 @@ const find = () => {
       setModalVisible(true);
       //router.replace("/driver");
     });
+
+    socket.current.on("rideCancelled", (msg) => {
+      Alert.alert("Cancelled", "Ride cancelled by user.")
+      router.replace("/driver");
+    });
   }, []);
 
   const toggleSheet = () => {
@@ -159,6 +164,7 @@ const Rating = ({ modalVisible, setModalVisible,  handleRating}) => {
           alignItems: "center",
           backgroundColor: "rgba(0, 0, 0, 0.5)",
         }}
+        
       >
         <View
           style={{
@@ -166,8 +172,9 @@ const Rating = ({ modalVisible, setModalVisible,  handleRating}) => {
             padding: 20,
             borderRadius: 10,
             alignItems: "center",
-            width: 250,
+            width: 300,
           }}
+            
         >
           <Text style={{ fontSize: 18, marginBottom: 15 }}>
             Rate Your Passenger

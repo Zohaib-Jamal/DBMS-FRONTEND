@@ -28,7 +28,7 @@ const useGet = () => {
 
       let res = await fetch(api, options);
       let result = await res.json();
-
+      
       if (res.status === 403) {
         const refToken = await AsyncStorage.getItem("refresh_token");
 
@@ -55,7 +55,7 @@ const useGet = () => {
       }
 
       setResponse(result);
-
+   
       return result
     } catch (err) {
       setError(err);

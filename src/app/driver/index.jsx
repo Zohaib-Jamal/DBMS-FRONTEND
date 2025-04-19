@@ -9,6 +9,7 @@ import {
   Switch,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Avatar } from "react-native-elements";
@@ -19,7 +20,7 @@ import { router } from "expo-router";
 import useGet from "../../hook/useGet";
 import { useDriver } from "../../context/DriverContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const Divider = ({
   width = "90%",
@@ -54,10 +55,13 @@ const home = () => {
   }, []);
 
   const [rides, setRides] = useState([]);
+  const [vehicle, setVehicle] = useState(null);
   const [rideLoading, setRideLoading] = useState([]);
+  const [vehicleLoading, setVehicleLoading] = useState(false);
   useEffect(() => {
     const fn = async () => {
       setRideLoading(true);
+      setVehicleLoading(true);
       const res = await getData("/driver/history");
 
       const filtered = res.data.map(
@@ -67,9 +71,16 @@ const home = () => {
           RideDate,
         })
       );
-   
+
       setRides(filtered);
       setRideLoading(false);
+
+      const vehicleRes = await getData("/vehicle");
+
+      if (vehicleRes?.data) {
+        setVehicle(vehicleRes.data);
+      }
+      setVehicleLoading(false);
     };
 
     fn();
@@ -100,12 +111,12 @@ const home = () => {
           <View className="pt-5 flex-row justify-between items-center">
             <Text
               style={{
-                fontSize: 35,
+                
 
                 color: "white",
                 fontStyle: "bold",
               }}
-              className="font-pbold text-lg mt-5 pt-5"
+             className="font-pbold text-2xl mt-5 pt-5"
             >
               Hello, {driverData.firstName}!
             </Text>
@@ -143,7 +154,9 @@ const home = () => {
                 elevation: 10,
               }}
               className="mr-2"
-              onPress={() => router.push("/driver/vehicle")}
+              onPress={() => {
+                router.push("/driver/vehicle");
+              }}
             >
               <FontAwesome name="car" size={40} color="#FFBC07" />
               <Text className="font-plight text-white pt-2">Add Vehicle</Text>
@@ -167,14 +180,61 @@ const home = () => {
                 elevation: 10,
               }}
               className="ml-2"
-              onPress={() => router.push("/driver/ride")}
+              onPress={() => {
+                if (vehicle) router.push("/driver/ride");
+                else {
+                  Alert.alert("No Vehicle", "Add vehicle to start ride");
+                }
+              }}
             >
-              
-              <MaterialCommunityIcons name="run-fast" size={40} color="#FFBC07" />
+              <MaterialCommunityIcons
+                name="run-fast"
+                size={40}
+                color="#FFBC07"
+              />
               <Text className="font-plight text-white pt-2">Start Ride</Text>
-
             </TouchableOpacity>
           </View>
+
+          <View
+            style={{
+              backgroundColor: "#242A33",
+
+              borderRadius: 10,
+              shadowColor: "#000",
+              elevation: 20,
+
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: 0.4,
+              shadowRadius: 6.5,
+              elevation: 10,
+            }}
+            className="w-full p-5 mb-5"
+          >
+            <Text className="font-pbold text-lg text-white ">
+              Your Vehicle:
+            </Text>
+            {!vehicleLoading ? (
+              vehicle ? (
+                <VehicleCard
+                  plate={vehicle.PlateNo}
+                  model={vehicle.Model}
+                  type={vehicle.VehicleType}
+                />
+              ) : (
+                <Text className="text-white font-plight text-sm text-center mt-10">
+                  Add your vehicle!
+                </Text>
+              )
+            ) : (
+              <View className="flex-1 justify-center items-center ">
+                <ActivityIndicator color="#FFBC07" size="large" />
+              </View>
+            )}
+          </View>
+
+          <StatusBar backgroundColor="#2D343C" style="dark" />
 
           <View
             style={{
@@ -242,12 +302,28 @@ const RecentCard = ({ from, to, date }) => {
     <View className="flex flex-col">
       <Divider color="white" width="100%" />
       <View className="flex-row justify-between items-center">
-        <Text className="font-psemibold text-base text-white ">
-          From: {from}
-        </Text>
-        <Text className="font-plight text-sm text-white ">Dated: {date}</Text>
+        <Text className="font-psemibold text-sm text-white ">From: {from}</Text>
+        <Text className="font-plight text-xs text-white ">Dated: {date}</Text>
       </View>
-      <Text className="font-psemibold text-base text-white mt-2">To: {to}</Text>
+      <Text className="font-psemibold text-sm text-white mt-2">To: {to}</Text>
+    </View>
+  );
+};
+
+const VehicleCard = ({ model, plate, type }) => {
+  return (
+    <View className="flex flex-col mt-3">
+      <View className="flex-row justify-between items-center">
+        <Text className="font-psemibold text-sm text-white ">
+          Model: {model}
+        </Text>
+        <Text className="font-psemibold text-sm text-white ">
+          Plate No: {plate}
+        </Text>
+      </View>
+      <Text className="font-psemibold text-sm text-white mt-2">
+        Type: {type}
+      </Text>
     </View>
   );
 };

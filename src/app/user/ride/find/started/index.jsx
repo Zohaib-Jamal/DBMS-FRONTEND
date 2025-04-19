@@ -43,6 +43,11 @@ const Find = () => {
       setModalVisible(true);
      
     });
+
+    socket.current.on("rideCancelled", (msg) => {
+          Alert.alert("Cancelled", "You cancelled ride.")
+          router.replace("/user");
+        });
   }, []);
 
   const toggleSheet = () => {
@@ -108,7 +113,7 @@ const Find = () => {
           {expanded && (
             <TouchableOpacity
               onPress={() => {
-                console.log("Cancel ride pressed");
+                socket.current.emit("cancelRide",{userID:rideData.userID,driverID:rideData.driverID})
               }}
               className="bg-red-600 p-2 rounded-xl items-center"
             >
@@ -138,6 +143,7 @@ const Rating = ({ modalVisible, setModalVisible ,handleRating}) => {
           alignItems: "center",
           backgroundColor: "rgba(0, 0, 0, 0.5)",
         }}
+      
       >
         <View
           style={{
@@ -145,8 +151,9 @@ const Rating = ({ modalVisible, setModalVisible ,handleRating}) => {
             padding: 20,
             borderRadius: 10,
             alignItems: "center",
-            width: 250,
+            width: 300,
           }}
+        
         >
           <Text style={{ fontSize: 18, marginBottom: 15 }}>
             Rate Your Driver

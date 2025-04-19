@@ -105,12 +105,12 @@ const home = () => {
           <View className="pt-5 flex-row justify-between items-center">
             <Text
               style={{
-                fontSize: 35,
+              
 
                 color: "white",
                 fontStyle: "bold",
               }}
-              className="font-pbold text-lg mt-5 pt-5"
+              className="font-pbold text-2xl mt-5 pt-5"
             >
               Hello, {userData.firstname}!
             </Text>
@@ -244,12 +244,12 @@ const RecentCard = ({ from, to, date }) => {
     <View className="flex flex-col">
       <Divider color="white" width="100%" />
       <View className="flex-row justify-between items-center">
-        <Text className="font-psemibold text-base text-white ">
+        <Text className="font-psemibold text-sm text-white ">
           From: {from}
         </Text>
-        <Text className="font-plight text-sm text-white ">Dated: {date}</Text>
+        <Text className="font-plight text-xs text-white ">Dated: {date}</Text>
       </View>
-      <Text className="font-psemibold text-base text-white mt-2">To: {to}</Text>
+      <Text className="font-psemibold text-sm text-white mt-2">To: {to}</Text>
     </View>
   );
 };

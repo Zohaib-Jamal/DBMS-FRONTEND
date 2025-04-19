@@ -37,7 +37,8 @@ const find = () => {
         });
 
         socket.current.on("counterOffer", (mess) => {
-          setOffers((prev) => [...prev, mess]);
+          setOffers((prev) => [...prev, { ...mess, pending: false }]);
+         
         });
 
         socket.current.on("rideAccepted", (mess) => {
@@ -71,7 +72,15 @@ const find = () => {
               firstName={item.firstName}
               lastName={item.lastName}
               rating={item.rating}
+              pending={item.pending}
               onAccept={() => {
+
+                setOffers((prevOffers) =>
+                  prevOffers.map((offer, i) =>
+                    i === index ? { ...offer, pending: true } : offer
+                  )
+                );
+
                 socket.current.emit("acceptRide", {
                   userID: item.userID,
                   departure: item.pickup,
@@ -100,16 +109,19 @@ const find = () => {
 
 export default find;
 
-const OfferCard = ({ fare, firstName, lastName, rating, onAccept }) => {
+const OfferCard = ({ fare, firstName, lastName, rating, onAccept, pending }) => {
+
+  
+
   return (
-    <TouchableOpacity
+    <View
       className="bg-[#242A33] rounded-2xl p-4 w-full max-w-sm mx-auto mb-5"
       activeOpacity={1}
     >
       <Text className="text-[#FFBC07] text-lg font-semibold mb-1">
         Driver: {firstName} {lastName}
       </Text>
-      <Text className="text-gray-300 text-sm mb-3">Rating: {rating}</Text>
+      <Text className="text-gray-300 text-sm mb-3">Rating: {rating==="null" || !rating?"New Driver":rating}</Text>
 
       <View className="flex-row justify-between items-center mb-3">
         <Text className="text-white text-sm">Fare</Text>
@@ -118,12 +130,16 @@ const OfferCard = ({ fare, firstName, lastName, rating, onAccept }) => {
         </Text>
       </View>
 
-      <TouchableOpacity
-        onPress={onAccept}
-        className="bg-[#FFBC07] rounded p-2 items-center"
-      >
-        <Text className="text-black font-bold text-sm">Accept</Text>
-      </TouchableOpacity>
-    </TouchableOpacity>
+      {pending ? (
+        <Text className="text-yellow-400 text-center font-bold">Pending</Text>
+      ) : (
+        <TouchableOpacity
+          onPress={ onAccept}
+          className="bg-[#FFBC07] rounded p-2 items-center"
+        >
+          <Text className="text-black font-bold text-sm">Accept</Text>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };
