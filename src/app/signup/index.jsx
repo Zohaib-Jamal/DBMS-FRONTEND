@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useUser } from "../../context/UserContext";
+
 import usePost from "../../hook/usePost";
 import { router } from "expo-router";
 import { validateSignUpForm } from "../../lib/validate";
@@ -33,7 +33,7 @@ const Signup = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const { setUserData } = useUser();
+  
   const { response, error, loading, postData } = usePost();
   useEffect(() => {
     setfirstName("Zohaib");

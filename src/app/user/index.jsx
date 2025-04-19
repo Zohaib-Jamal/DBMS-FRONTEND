@@ -173,7 +173,7 @@ const home = () => {
                 elevation: 10,
               }}
               className="ml-2"
-              onPress={() => router.push("/user/bus")}
+              onPress={() => router.push("/user/bus/home")}
             >
               <FontAwesome name="bus" size={40} color="#FFBC07" />
               <Text className="font-plight text-white pt-2">Inter City</Text>

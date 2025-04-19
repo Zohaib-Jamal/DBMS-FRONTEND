@@ -1,26 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
-import useGet from "../../../hook/useGet";
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
 
 const index = () => {
-  const { getData } = useGet();
-
-  useEffect(() => {
-    const fn = async () => {
-      const res = await getData("/company");
-      console.log(res)
-    };
-
-    fn();
-  }, []);
-
   return (
     <View>
       <Text>index</Text>
     </View>
-  );
-};
+  )
+}
 
-export default index;
+export default index
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})
