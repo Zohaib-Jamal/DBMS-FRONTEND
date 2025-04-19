@@ -9,6 +9,7 @@ const Userlayout = () => {
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="vehicle/index" options={{ headerShown: false }} />
+          <Stack.Screen name="ride" options={{ headerShown: false }} />
         </Stack>
       </LocationProvider>
     </DriverProvider>

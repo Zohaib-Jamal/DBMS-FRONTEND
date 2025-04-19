@@ -24,7 +24,7 @@ export default function App() {
       const refresh_token = await AsyncStorage.getItem("refresh_token");
 
       const res = await postData({ refresh_token }, "/auth/refresh_token");
-      console.log("res", res)
+    
       const access_token = res.access_token;
       
       if (access_token && res.role === "User") {

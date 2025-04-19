@@ -1,7 +1,9 @@
 import { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // assuming you're using React Native
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BASE_URL } from "../constants";
 
-const baseurl = "http://192.168.1.13:3000";
+const baseurl = BASE_URL
+
 
 const useGet = () => {
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ const useGet = () => {
         },
       };
 
-      console.log("api: ", api)
+      
 
       let res = await fetch(api, options);
       let result = await res.json();

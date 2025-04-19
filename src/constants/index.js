@@ -1,5 +1,5 @@
 //import icons from "./icons"
 import images from "./image";
-import svgs from "./svg"
-
-export { images ,svgs};
+import svgs from "./svg";
+const BASE_URL = "http://192.168.1.13:3000";
+export { images, svgs, BASE_URL };

@@ -6,6 +6,7 @@ import {
   View,
   Switch,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useEffect, useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -18,23 +19,31 @@ const Addvehicle = () => {
   const [VehicleType, setType] = useState("");
   const [PlateNo, setPlateNo] = useState("");
 
-  const { response, error, loading, postData } = usePost();
+  const { response, error, postData } = usePost();
 
+  const[loading, setLoading] = useState(false)
 
   const submitVehicle = async () => {
     try {
+      setLoading(true)
       const data = {
         model: Model,
-        type: VehicleType,
-        plate: PlateNo,
+        vehicleType: VehicleType,
+        plateNo: PlateNo,
       };
 
-      const res = await postData(data, "/vehicle/add");
-      if (res?.success) {
+      const res = await postData(data, "/vehicle");
+      if (res.message === "Vehicle Created") {
+        Alert.alert("Success", "Vehicle Created");
         router.replace("/driver");
+        return;
       }
+      Alert.alert("Failed", "Vehicle Creation Failed!");
     } catch (err) {
+      Alert.alert("Failed", "Vehicle Creation Failed!");
       console.log("Error:", err);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -122,6 +131,7 @@ const Addvehicle = () => {
             borderWidth: 1,
           }}
           onPress={submitVehicle}
+          disabled={loading}
         >
           <Text style={{ color: "white", fontSize: 16 }}>Submit Vehicle</Text>
         </TouchableOpacity>

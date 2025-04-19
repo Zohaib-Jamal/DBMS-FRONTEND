@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Switch,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Avatar } from "react-native-elements";
@@ -19,7 +19,7 @@ import { router } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import useGet from "../../hook/useGet";
 import { useUser } from "../../context/UserContext";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Divider = ({
   width = "90%",
@@ -45,8 +45,6 @@ const home = () => {
   const [data, setData] = useState(null);
   const { userData, setUserData } = useUser();
 
-  const [rides, setRides] = useState(null);
-
   const { getData } = useGet();
 
   useEffect(() => {
@@ -54,10 +52,41 @@ const home = () => {
       const res = await getData("/user/data");
       console.log(res);
       setUserData(res.data);
+
+      res = await getData("/user/rides");
+      console.log("rides", res.data);
     };
 
     fn();
   }, []);
+
+  const [rides, setRides] = useState([]);
+  const [rideLoading, setRideLoading] = useState([]);
+  useEffect(() => {
+    const fn = async () => {
+      setRideLoading(true);
+      const res = await getData("/user/rides");
+      const filtered = res.data.map(
+        ({ ArrivalLocation, DepartureLocation, RideDate }) => ({
+          ArrivalLocation,
+          DepartureLocation,
+          RideDate,
+        })
+      );
+      console.log("fil", filtered);
+     setRides(filtered);
+      setRideLoading(false);
+    };
+
+    fn();
+  }, [userData]);
+
+  const handleLogout = async () => {
+    setUserData(null);
+    await AsyncStorage.removeItem("access_token");
+    await AsyncStorage.removeItem("refresh_token");
+    router.replace("/");
+  };
 
   return (
     <SafeAreaView
@@ -67,13 +96,13 @@ const home = () => {
       }}
       className="px-5"
     >
-      {!userData || !userData.firstname? (
+      {!userData || !userData.firstname ? (
         <View className="flex-1 justify-center items-center ">
           <ActivityIndicator color="#FFBC07" size="large" />
         </View>
       ) : (
         <ScrollView>
-          <View className="pt-5">
+          <View className="pt-5 flex-row justify-between items-center">
             <Text
               style={{
                 fontSize: 35,
@@ -81,10 +110,16 @@ const home = () => {
                 color: "white",
                 fontStyle: "bold",
               }}
-              className="font-pbold text-lg pt-14"
+              className="font-pbold text-lg mt-5 pt-5"
             >
               Hello, {userData.firstname}!
             </Text>
+
+            <View className="pt-5">
+              <TouchableOpacity onPress={handleLogout}>
+                <FontAwesome name="sign-out" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View
@@ -164,18 +199,35 @@ const home = () => {
             <Text className="font-pbold text-lg text-white ">
               Your Activity:
             </Text>
-            {rides ? (
-              rides.map(() => {
-                <RecentCard
-                  from={rides.from}
-                  to={rides.to}
-                  date={rides.dated}
-                />;
-              })
+            {!rideLoading ? (
+              rides.length > 0 ? (
+                rides.sort((a, b) => new Date(b.RideDate) - new Date(a.RideDate)).map((item, index) => {
+                  if (
+                    item.ArrivalLocation !== "null"&&
+                    item.DepartureLocation !== "null"&&
+                    item.RideDate!== "null"
+                  ) {
+                    return (
+                      <RecentCard
+                        key={index}
+                        from={item.ArrivalLocation}
+                        to={item.DepartureLocation}
+                        date={new Date(item.RideDate).toLocaleDateString()}
+                      />
+                    );
+                  } else {
+                    return null;
+                  }
+                })
+              ) : (
+                <Text className="text-white font-plight text-sm text-center mt-10">
+                  Book a ride now to see it here!
+                </Text>
+              )
             ) : (
-              <Text className="text-white font-plight text-sm text-center mt-10">
-                Book a ride now to see it here!
-              </Text>
+              <View className="flex-1 justify-center items-center ">
+                <ActivityIndicator color="#FFBC07" size="large" />
+              </View>
             )}
           </View>
         </ScrollView>
@@ -195,9 +247,9 @@ const RecentCard = ({ from, to, date }) => {
         <Text className="font-psemibold text-base text-white ">
           From: {from}
         </Text>
-        <Text className="font-psemibold text-base text-white ">To: {to}</Text>
+        <Text className="font-plight text-sm text-white ">Dated: {date}</Text>
       </View>
-      <Text className="font-plight text-sm text-white ">Dated: {date}</Text>
+      <Text className="font-psemibold text-base text-white mt-2">To: {to}</Text>
     </View>
   );
 };

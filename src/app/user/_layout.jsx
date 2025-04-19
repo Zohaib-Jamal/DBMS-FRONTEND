@@ -10,11 +10,8 @@ const Userlayout = () => {
     <UserProvider>
       <LocationProvider>
         <Stack>
-          <Stack.Screen name="ride/index" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="ride/find/index"
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="ride" options={{ headerShown: false }} />
+         
 
           <Stack.Screen name="bus/index" options={{ headerShown: false }} />
           <Stack.Screen name="index" options={{ headerShown: false }} />

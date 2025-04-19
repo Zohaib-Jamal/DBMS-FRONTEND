@@ -28,7 +28,7 @@ const RootLayout = () => {
 
   if (!fontsLoaded && !error) return null;
 
-  console.log("fontsLoaded: ", fontsLoaded);
+  
   return (
     <Stack>
       <Stack.Screen name="login/index" options={{ headerShown: false }} />

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BASE_URL } from "../constants";
 
-const baseurl = "http://192.168.1.13:3000"
+const baseurl = BASE_URL
 
 
 const usePost = () => {
@@ -13,8 +14,7 @@ const usePost = () => {
 
   const postData = async (data, api, method = "POST") => {
     if (!data || !api) return;
-
-    console.log("sending...",data)
+    
 
     setLoading(true);
     try {
