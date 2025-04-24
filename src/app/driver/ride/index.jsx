@@ -120,7 +120,7 @@ const choose = () => {
           ))
         ) : (
           <View className="flex-1 justify-center items-center">
-            <Text className="text-white text-xl">Searching...</Text>
+            <Text className="text-white text-xl font-psemibold">Searching...</Text>
           </View>
         )}
       </View>
@@ -145,14 +145,14 @@ const RequestCard = ({ destination, fare, pickup, status, onFareSubmit }) => {
       className="bg-[#242A33] rounded-2xl p-4 w-full max-w-sm mx-auto mb-5"
       activeOpacity={1}
     >
-      <Text className="text-[#FFBC07] text-lg font-semibold mb-1">
+      <Text className="text-[#FFBC07] text-lg font-psemibold mb-1">
         {destination}
       </Text>
-      <Text className="text-gray-300 text-sm mb-3">Pickup: {pickup}</Text>
+      <Text className="text-gray-300 text-sm mb-3 font-pregular">Pickup: {pickup}</Text>
 
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-white text-sm">Status: {status}</Text>
-        <Text className="bg-[#FFBC07] text-black px-2 py-1 rounded font-bold text-sm">
+        <Text className="text-white text-sm font-pregular">Status: {status}</Text>
+        <Text className="bg-[#FFBC07] text-black px-2 py-1 rounded font-pbold text-sm ">
           Rs. {fare}
         </Text>
       </View>
@@ -164,14 +164,14 @@ const RequestCard = ({ destination, fare, pickup, status, onFareSubmit }) => {
         value={customFare}
         onChangeText={setCustomFare}
         keyboardType="numeric"
-        className="bg-white text-black px-3 py-2 rounded mb-2"
+        className="bg-white text-black px-3 py-2 rounded mb-2 font-pregular"
       />
 
       <TouchableOpacity
         onPress={handleSubmitFare}
         className="bg-[#FFBC07] rounded p-2 items-center"
       >
-        <Text className="text-black font-bold text-sm">Submit Fare</Text>
+        <Text className="text-black font-pbold text-sm">Submit Fare</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );

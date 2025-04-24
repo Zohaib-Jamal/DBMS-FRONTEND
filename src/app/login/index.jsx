@@ -14,11 +14,18 @@ import { useState, useEffect } from "react";
 import usePost from "../../hook/usePost";
 import { router } from "expo-router";
 
+
+
 const login = () => {
+
+
+
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
   const { response, error, loading, postData } = usePost();
+
+  
 
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -100,6 +107,7 @@ const login = () => {
             placeholderTextColor="#4a4a4a"
             value={email}
             onChangeText={(e) => setEmail(e)}
+           
           />
 
           <TextInput
@@ -126,7 +134,7 @@ const login = () => {
             }}
           >
             <Text style={{ color: "white", fontSize: 16, marginRight: 10 }}>
-              Login A Driver
+              Login As Driver
               {/* Display current user type */}
             </Text>
 

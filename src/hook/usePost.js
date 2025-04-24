@@ -40,7 +40,7 @@ const usePost = () => {
       
       
       const result = await res.json();
-      console.log(result);
+     
 
       if (res.status === 403) {
         const refToken = await AsyncStorage.getItem("refresh_token");
@@ -54,13 +54,32 @@ const usePost = () => {
 
         const result2 = await res.json()
 
+
+
+
+
+
+
+
+
         if (res.status === 403) {
           throw new Error("Unauthorized");
         }
         const accToken = result2.access_token;
         await AsyncStorage.setItem("access_token", accToken);
 
-        
+
+
+
+
+
+
+
+        options.headers.Authorization = `Bearer ${accToken}`;
+        res = await fetch(str, options);
+        result = await res.json();
+
+
       } else if (res.status > 299) {
         throw new Error(result.message);
       }
@@ -78,13 +97,13 @@ const usePost = () => {
   
       return result
     } catch (err) {
-      setError(err); // invlaid token invalid req incomplete data
-      console.log("post:", err); // print error
+      setError(err); 
+      console.log("post:", err); 
 
 
 
 
-      return err.message // 
+      return err.message 
     } finally {
       setLoading(false);
     }

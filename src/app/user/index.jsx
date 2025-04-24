@@ -40,9 +40,7 @@ const Divider = ({
 };
 
 const home = () => {
-  const navigation = useNavigation();
-  const [name, setname] = useState();
-  const [data, setData] = useState(null);
+
   const { userData, setUserData } = useUser();
 
   const { getData } = useGet();
@@ -50,11 +48,11 @@ const home = () => {
   useEffect(() => {
     const fn = async () => {
       const res = await getData("/user/data");
-      console.log(res);
+   
       setUserData(res.data);
 
       res = await getData("/user/rides");
-      console.log("rides", res.data);
+  
     };
 
     fn();
@@ -64,8 +62,15 @@ const home = () => {
   const [rideLoading, setRideLoading] = useState([]);
   useEffect(() => {
     const fn = async () => {
+      
       setRideLoading(true);
       const res = await getData("/user/rides");
+      if(res === "No record found!"){
+        setRideLoading(false);
+        setRides([])
+        return
+      }
+     
       const filtered = res.data.map(
         ({ ArrivalLocation, DepartureLocation, RideDate }) => ({
           ArrivalLocation,
@@ -73,8 +78,8 @@ const home = () => {
           RideDate,
         })
       );
-      console.log("fil", filtered);
-     setRides(filtered);
+   
+      setRides(filtered);
       setRideLoading(false);
     };
 
@@ -105,8 +110,6 @@ const home = () => {
           <View className="pt-5 flex-row justify-between items-center">
             <Text
               style={{
-              
-
                 color: "white",
                 fontStyle: "bold",
               }}
@@ -201,24 +204,26 @@ const home = () => {
             </Text>
             {!rideLoading ? (
               rides.length > 0 ? (
-                rides.sort((a, b) => new Date(b.RideDate) - new Date(a.RideDate)).map((item, index) => {
-                  if (
-                    item.ArrivalLocation !== "null"&&
-                    item.DepartureLocation !== "null"&&
-                    item.RideDate!== "null"
-                  ) {
-                    return (
-                      <RecentCard
-                        key={index}
-                        from={item.ArrivalLocation}
-                        to={item.DepartureLocation}
-                        date={new Date(item.RideDate).toLocaleDateString()}
-                      />
-                    );
-                  } else {
-                    return null;
-                  }
-                })
+                rides
+                  .sort((a, b) => new Date(b.RideDate) - new Date(a.RideDate))
+                  .map((item, index) => {
+                    if (
+                      item.ArrivalLocation !== "null" &&
+                      item.DepartureLocation !== "null" &&
+                      item.RideDate !== "null"
+                    ) {
+                      return (
+                        <RecentCard
+                          key={index}
+                          from={item.ArrivalLocation}
+                          to={item.DepartureLocation}
+                          date={new Date(item.RideDate).toLocaleDateString()}
+                        />
+                      );
+                    } else {
+                      return null;
+                    }
+                  })
               ) : (
                 <Text className="text-white font-plight text-sm text-center mt-10">
                   Book a ride now to see it here!
@@ -244,9 +249,7 @@ const RecentCard = ({ from, to, date }) => {
     <View className="flex flex-col">
       <Divider color="white" width="100%" />
       <View className="flex-row justify-between items-center">
-        <Text className="font-psemibold text-sm text-white ">
-          From: {from}
-        </Text>
+        <Text className="font-psemibold text-sm text-white ">From: {from}</Text>
         <Text className="font-plight text-xs text-white ">Dated: {date}</Text>
       </View>
       <Text className="font-psemibold text-sm text-white mt-2">To: {to}</Text>

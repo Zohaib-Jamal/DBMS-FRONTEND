@@ -37,6 +37,7 @@ const find = () => {
   useEffect(() => {
     const fn = async () => {
       const accToken = await AsyncStorage.getItem("access_token");
+
       socket.current = io(baseurl, {
         query: { token: accToken },
         transports: ["websocket"],
@@ -60,6 +61,7 @@ const find = () => {
 
         socket.current.on("counterOffer", (mess) => {
           setOffers((prev) => [...prev, { ...mess, pending: false }]);
+          console.log(offers);
         });
 
         socket.current.on("rideAccepted", (mess) => {
@@ -119,9 +121,35 @@ const find = () => {
           ))
         ) : (
           <View className="flex-1 justify-center items-center">
-            <Text className="text-white text-xl">Searching...</Text>
+            <Text className="text-white text-xl font-psemibold">Searching...</Text>
           </View>
         )}
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "#1C1F26",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          padding: 16,
+          minHeight: 60,
+          zIndex: 10,
+        }}
+        className="flex-row justify-between"
+      >
+        <Text className="text-secondary text-lg font-psemibold mb-1">Fare:</Text>
+        <Text className="text-gray-300 text-lg font-psemibold  mb-1">
+          {haversine(
+            userLocation.latitude,
+            userLocation.longitude,
+            destinationLocation.latitude,
+            destinationLocation.longitude
+          ) * 15}{" "}
+          Rs
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -142,28 +170,28 @@ const OfferCard = ({
       className="bg-[#242A33] rounded-2xl p-4 w-full max-w-sm mx-auto mb-5"
       activeOpacity={1}
     >
-      <Text className="text-[#FFBC07] text-lg font-semibold mb-1">
+      <Text className="text-[#FFBC07] text-lg font-psemibold mb-1">
         Driver: {firstName} {lastName}
       </Text>
-      <Text className="text-gray-300 text-sm mb-3">
+      <Text className="text-gray-300 text-sm mb-3 font-pregular">
         Rating: {rating === "null" || !rating ? "New Driver" : rating}
       </Text>
 
       <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-white text-sm">Fare</Text>
-        <Text className="bg-[#FFBC07] text-black px-2 py-1 rounded font-bold text-sm">
+        <Text className="text-white text-sm font-pregular">Fare</Text>
+        <Text className="bg-[#FFBC07] text-black px-2 py-1 rounded font-pbold text-sm">
           Rs. {fare}
         </Text>
       </View>
 
       {pending ? (
-        <Text className="text-yellow-400 text-center font-bold">Pending</Text>
+        <Text className="text-yellow-400 text-center font-pbold">Pending</Text>
       ) : (
         <TouchableOpacity
           onPress={onAccept}
           className="bg-[#FFBC07] rounded p-2 items-center"
         >
-          <Text className="text-black font-bold text-sm">Accept</Text>
+          <Text className="text-black font-pbold text-sm">Accept</Text>
         </TouchableOpacity>
       )}
     </View>

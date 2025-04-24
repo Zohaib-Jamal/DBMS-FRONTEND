@@ -63,19 +63,32 @@ const home = () => {
       setRideLoading(true);
       setVehicleLoading(true);
       const res = await getData("/driver/history");
+      if(res === "No record found!"){
+        setRideLoading(false);
+        setRides([])
+        
+      }else{
+        const filtered = res.data.map(
+          ({ ArrivalLocation, DepartureLocation, RideDate }) => ({
+            ArrivalLocation,
+            DepartureLocation,
+            RideDate,
+          })
+        );
+  
+        setRides(filtered);
+        setRideLoading(false);
+      }
 
-      const filtered = res.data.map(
-        ({ ArrivalLocation, DepartureLocation, RideDate }) => ({
-          ArrivalLocation,
-          DepartureLocation,
-          RideDate,
-        })
-      );
-
-      setRides(filtered);
-      setRideLoading(false);
+      
 
       const vehicleRes = await getData("/vehicle");
+      console.log("veh", vehicleRes)
+      if(vehicleRes === "No record found!"){
+        setVehicleLoading(false);
+        setVehicle(null)
+        return
+      }
 
       if (vehicleRes?.data) {
         setVehicle(vehicleRes.data);

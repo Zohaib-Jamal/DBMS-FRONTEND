@@ -12,11 +12,15 @@ import { useLocation } from "../../../context/LocationContext";
 import * as Location from "expo-location";
 import Map from "../../../components/ride/Map";
 import CustomButton from "../../../components/CustomButton";
-import {router} from "expo-router"
+import { router } from "expo-router";
 
 const choose = () => {
-  const { setUserLocation, setDestinationLocation, userLocation, destinationLocation} = useLocation();
-  
+  const {
+    setUserLocation,
+    setDestinationLocation,
+    userLocation,
+    destinationLocation,
+  } = useLocation();
 
   const [hasPermissions, setHasPermissions] = useState(false);
 
@@ -52,7 +56,6 @@ const choose = () => {
     reqLocation();
   }, []);
 
-
   return (
     <SafeAreaView
       style={{
@@ -63,11 +66,16 @@ const choose = () => {
     >
       <Map />
       <View className="absolute top-5 left-5 right-5 space-y-3 z-10">
-        <LocationSelector placeholder="Current Location" setSelected={(e)=>setUserLocation(e)} />
-        <LocationSelector placeholder="Destination" setSelected={(e)=>setDestinationLocation(e)}/>
+        <LocationSelector
+          placeholder="Current Location"
+          setSelected={(e) => setUserLocation(e)}
+        />
+        <LocationSelector
+          placeholder="Destination"
+          setSelected={(e) => setDestinationLocation(e)}
+        />
       </View>
 
-    
       <View className="absolute bottom-4 left-5 right-5 space-y-3 z-10">
         <CustomButton
           title="Find"
@@ -80,7 +88,6 @@ const choose = () => {
           disabled={!destinationLocation.address}
           containerStylesNonT={{ minHeight: 60 }}
           textStylesNonT={{ fontWeight: "700" }}
-          
         />
       </View>
     </SafeAreaView>
@@ -91,7 +98,7 @@ export default choose;
 
 const styles = StyleSheet.create({});
 
-const LocationSelector = ({ placeholder,setSelected }) => {
+const LocationSelector = ({ placeholder, setSelected }) => {
   const [query, setQuery] = useState("");
   const [filtered, setFiltered] = useState([]);
   //const [selected, setSelected] = useState("");
@@ -154,9 +161,8 @@ const LocationSelector = ({ placeholder,setSelected }) => {
   );
 };
 
-
 const suggestions = [
-  { address: "Plot C 106, Punjab", latitude: 31.39533, longitude: 74.1783983 },
+  
   { address: "New York", latitude: 40.7128, longitude: -74.006 },
   { address: "Los Angeles", latitude: 34.0522, longitude: -118.2437 },
   { address: "Chicago", latitude: 41.8781, longitude: -87.6298 },
@@ -166,4 +172,14 @@ const suggestions = [
   { address: "Seattle", latitude: 47.6062, longitude: -122.3321 },
   { address: "Boston", latitude: 42.3601, longitude: -71.0589 },
   { address: "Fast NUCES", latitude: 31.4815212, longitude: 74.3030141 },
+  { address: "Plot C 108, Punjab", latitude: 31.398076, longitude: 74.1827116 },
+  { address: "Liberty Market", latitude: 31.5154, longitude: 74.3426 },
+  { address: "Emporium Mall", latitude: 31.4504, longitude: 74.2729 },
+  { address: "Badshahi Mosque", latitude: 31.5889, longitude: 74.3115 },
+  { address: "Minar-e-Pakistan", latitude: 31.5922, longitude: 74.3091 },
+  { address: "Lahore Fort", latitude: 31.5906, longitude: 74.3094 },
+  { address: "MM Alam Road", latitude: 31.5204, longitude: 74.3577 },
+  { address: "Gaddafi Stadium", latitude: 31.5146, longitude: 74.3407 },
+  { address: "Shaukat Khanum Hospital", latitude: 31.4709, longitude: 74.4084 },
+  { address: "DHA Phase 6", latitude: 31.4346, longitude: 74.4211 }
 ];
